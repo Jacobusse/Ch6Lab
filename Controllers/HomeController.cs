@@ -18,9 +18,14 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult List(UserField field, int pageNumber = 1, int pageSize = 10)
+    public IActionResult List(UserField field, int currentPage = 1, int pageSize = 10)
     {
-        int skip = (pageNumber - 1) * pageSize;
+        if (currentPage < 1 || pageSize < 1) 
+        {
+            return View("Index");
+        }
+
+        int skip = (currentPage - 1) * pageSize;
         var users = SortedUsers(field).Skip(skip).Take(pageSize).ToList();
         return View(users);
     }
