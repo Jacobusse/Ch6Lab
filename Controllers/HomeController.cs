@@ -18,6 +18,7 @@ public class HomeController : Controller
         return View();
     }
 
+    [Route("List/{field}/{pageSize?}/{currentPage?}")]
     public IActionResult List(UserField field, int currentPage = 1, int pageSize = 10)
     {
         if (currentPage < 1 || pageSize < 1) 
@@ -25,9 +26,16 @@ public class HomeController : Controller
             return View("Index");
         }
 
+        ListInfo listInfo = new ListInfo() 
+        {
+            Field = field,
+            CurrentPage = currentPage,
+            PageSize = pageSize
+        };
+
         int skip = (currentPage - 1) * pageSize;
-        var users = SortedUsers(field).Skip(skip).Take(pageSize).ToList();
-        return View(users);
+        listInfo.Users = SortedUsers(field).Skip(skip).Take(pageSize).ToList();
+        return View(listInfo);
     }
 
     private IOrderedEnumerable<User> SortedUsers(UserField field)
